@@ -35,7 +35,7 @@ EOS
       raise Puppet::ParseError, 'fqdn_randstr: alphabet must be a string'
     end
 
-    hash = Digest::SHA512.digest(lookupvar('fqdn') + seed).each_byte.to_a.map{|c| c.ord}
+    hash = Digest::SHA512.digest(lookupvar('fqdn') + seed).each_byte.to_a
 
     (0..len-1).map {|i| alphabet[hash[i] % alphabet.length].chr}.join("")
   end
