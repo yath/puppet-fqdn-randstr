@@ -2,6 +2,7 @@ require 'digest/sha2'
 
 DEF_LENGTH = 15
 DEF_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"$%&/()?#*'
+DEF_ITERS = 23425
 
 module Puppet::Parser::Functions
   newfunction(:fqdn_randstr, :type => :rvalue, :doc => <<-EOS
@@ -11,6 +12,7 @@ Arguments (optional):
   1) length of string to return (default: #{DEF_LENGTH}, maximum: 64)
   2) alphabet (default: '#{DEF_ALPHABET}')
   3) seed (default: '')
+  4) iterations (default: #{DEF_ITERS})
 EOS
   ) do |args|
     def isset_or_nil(var)
@@ -20,6 +22,7 @@ EOS
     len = isset_or_nil(args[0]) || DEF_LENGTH
     alphabet = isset_or_nil(args[1]) || DEF_ALPHABET
     seed = isset_or_nil(args[2]) || ''
+    iters = isset_or_nil(args[3]) || DEF_ITERS
 
     begin
       len = Integer(len) # .to_i y u don't throw exception!?!?
@@ -35,7 +38,9 @@ EOS
       raise Puppet::ParseError, 'fqdn_randstr: alphabet must be a string'
     end
 
-    hash = Digest::SHA512.digest(lookupvar('fqdn') + seed).each_byte.to_a
+    hash = Digest::SHA512.digest(lookupvar('fqdn') + seed)
+    (1..iters).each { hash = Digest::SHA512.digest(hash) }
+    hash = hash.each_byte.to_a
 
     (0..len-1).map {|i| alphabet[hash[i] % alphabet.length].chr}.join("")
   end
