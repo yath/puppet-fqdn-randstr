@@ -38,6 +38,10 @@ EOS
       raise Puppet::ParseError, 'fqdn_randstr: alphabet must be a string'
     end
 
+    if alphabet.length > 256
+      raise Puppet::ParseError, 'fqdn_randstr: alphabet with more than 256 not supported'
+    end
+
     hash = Digest::SHA512.digest(lookupvar('fqdn') + seed)
     (1..iters).each { hash = Digest::SHA512.digest(hash) }
     hash = hash.each_byte.to_a
