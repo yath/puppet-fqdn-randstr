@@ -1,7 +1,7 @@
 require 'digest/sha2'
 
 DEF_LENGTH = 15
-DEF_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"$%&/()?#*'
+DEF_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!$%&/()?#*'
 DEF_ITERS = 23425
 
 module Puppet::Parser::Functions
